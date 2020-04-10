@@ -28,4 +28,12 @@ public class LinkList {
     public void setShort_link(String short_link) {
         this.short_link = short_link;
     }
+
+    @Override
+    public String toString() {
+        return "LinkList{" +
+                "link='" + link + '\'' +
+                ", short_link='" + short_link + '\'' +
+                '}';
+    }
 }

@@ -43,7 +43,7 @@ public class MyAdapter extends BaseAdapter {
         TextView short_link = convertView.findViewById(R.id.short_link);
 
         link.setText(array.get(position).getLink());
-        short_link.setText("Short link " + array.get(position).getShort_link());
+        short_link.setText("Сокращенная ссылка: " + array.get(position).getShort_link());
 
         return convertView;
     }
