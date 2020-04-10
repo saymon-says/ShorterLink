@@ -13,9 +13,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayAdapter<String> adapter;
-    ArrayList<String> linkedList = new ArrayList<>();
-    EditText short_link;
+    MyAdapter myAdapter;
+    ArrayList<LinkList> linkedList = new ArrayList<>();
+    EditText short_link, link;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,14 +23,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ListView listview = findViewById(R.id.list_of_short_link);
         short_link = findViewById(R.id.short_link);
-
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, linkedList);
-        listview.setAdapter(adapter);
+        link = findViewById(R.id.link);
+        myAdapter = new MyAdapter(this, linkedList);
+        listview.setAdapter(myAdapter);
     }
 
     public void onClick(View v) {
-        linkedList.add(short_link.getText().toString());
-        adapter.notifyDataSetChanged();
+        linkedList.add(new LinkList(link.getText().toString(), short_link.getText().toString()));
+        myAdapter.notifyDataSetChanged();
+        link.setText("");
         short_link.setText("");
     }
 }
