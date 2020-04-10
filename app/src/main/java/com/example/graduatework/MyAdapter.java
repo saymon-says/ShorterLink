@@ -26,7 +26,7 @@ public class MyAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return position;
+        return array.get(position).getLink();
     }
 
     @Override

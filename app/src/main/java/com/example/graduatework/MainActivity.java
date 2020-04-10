@@ -1,15 +1,18 @@
 package com.example.graduatework;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +31,14 @@ public class MainActivity extends AppCompatActivity {
         btn = findViewById(R.id.btn);
         myAdapter = new MyAdapter(this, linkedList);
         listview.setAdapter(myAdapter);
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + parent.getAdapter().getItem(position)));
+                startActivity(browserIntent);
+            }
+        });
     }
 
     public void onClick(View v) {
@@ -39,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         } else {
             linkedList.forEach((n) -> System.out.println(n.toString()));
-            if (linkedList.equals(short_link.getText().toString())) {
+            if (!linkedList.equals(short_link.getText().toString())) {
                 linkedList.add(new LinkList(link.getText().toString(), short_link.getText().toString()));
                 myAdapter.notifyDataSetChanged();
                 link.setText("");
