@@ -5,61 +5,71 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    MyAdapter myAdapter;
-    ArrayList linkedList = new ArrayList<>();
+    ArrayAdapter<String> linksAdapter;
+
+    Map<String, String> links = new HashMap<>();
     EditText short_link, link;
     Button btn;
+    ListView listview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ListView listview = findViewById(R.id.list_of_short_link);
+
+        listview = findViewById(R.id.list_of_short_link);
         short_link = findViewById(R.id.short_link);
         link = findViewById(R.id.link);
         btn = findViewById(R.id.btn);
-        myAdapter = new MyAdapter(this, linkedList);
-        listview.setAdapter(myAdapter);
+
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + parent.getAdapter().getItem(position)));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://" + links.get(parent.getAdapter().getItem(position))));
                 startActivity(browserIntent);
             }
         });
     }
 
     public void onClick(View v) {
-        if (link.getText().length() < 4) {
-            btn.setText("Ссылка короче 4х символов");
-            return;
+        if ((link.getText().length() < 4) || (!link.getText().toString().contains("."))) {
+            btn.setText("Неверная ссылка");
         } else if (short_link.getText().length() == 0) {
             btn.setText("Укажите сокращение!");
-            return;
+        } else if(links.containsKey(short_link.getText().toString())) {
+            btn.setText("Занято");
         } else {
-            linkedList.forEach((n) -> System.out.println(n.toString()));
-            if (!linkedList.equals(short_link.getText().toString())) {
-                linkedList.add(new LinkList(link.getText().toString(), short_link.getText().toString()));
-                myAdapter.notifyDataSetChanged();
-                link.setText("");
-                short_link.setText("");
-                btn.setText("Добавлено");
-            } else {
-                btn.setText("Занято");
-                return;
-            }
+            links.put(short_link.getText().toString(), link.getText().toString());
+            setLinkItems();
+            link.setText("");
+            short_link.setText("");
+            btn.setText("Добавлено");
+        }
+    }
+
+    void setLinkItems() {
+        ArrayList linkedList = new ArrayList<>();
+        linksAdapter  =  new ArrayAdapter<>(this, R.layout.list_item, R.id.short_link,  linkedList);
+        listview.setAdapter(linksAdapter);
+        for(Map.Entry<String, String> entry : links.entrySet()) {
+            String short_link= entry.getKey();
+            String link = entry.getValue();
+            linkedList.add(short_link);
         }
     }
 }
